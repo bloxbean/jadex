@@ -1,0 +1,5 @@
+rootProject.name = 'jadex'
+include 'core'
+
+
+
