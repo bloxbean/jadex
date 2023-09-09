@@ -1,0 +1,209 @@
+plugins {
+    id 'java-library'
+    id 'maven-publish'
+    id 'signing'
+}
+
+repositories {
+    mavenCentral()
+    mavenLocal()
+}
+
+compileJava {
+    sourceCompatibility = '17'
+    targetCompatibility = '17'
+
+    options.compilerArgs += ["-Aproject=${project.group}/${project.name}"]
+}
+
+
+artifacts {
+    archives jar
+}
+
+dependencies {
+    api project(':core')
+}
+
+test {
+    useJUnitPlatform()
+}
+
+// Make all tests use JUnit 5
+tasks.withType(Test) {
+    useJUnitPlatform()
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            from components.java
+            pom {
+                name = 'jadex'
+                description = 'Jadex - A Cardano DEX aggregator implementation in Java'
+                url = 'https://github.com/bloxbean/jadex'
+                licenses {
+                    license {
+                        name = 'The MIT License'
+                        url = 'https://opensource.org/licenses/mit-license.php'
+                    }
+                }
+                developers {
+                    developer {
+                        id = 'stikkos'
+                        name = 'Stik'
+                    }
+                }
+                scm {
+                    connection = 'scm:git:git://github.com/bloxbean/jadex.git'
+                    developerConnection = 'scm:git:ssh://git@github.com/bloxbean/jadex.git'
+                    url = 'https://github.com/bloxbean/jadex'
+                }
+            }
+        }
+    }
+
+    repositories {
+        String ossrhUsername = System.getenv('MAVEN_USERNAME')
+        String ossrhPassword = System.getenv('MAVEN_PASSWORD')
+
+        maven {
+            def releasesRepoUrl = "https://oss.sonatype.org/service/local/staging/deploy/maven2"
+            def snapshotsRepoUrl = "https://oss.sonatype.org/content/repositories/snapshots/"
+            url = version.endsWith('SNAPSHOT') ? snapshotsRepoUrl : releasesRepoUrl
+            credentials {
+                username ossrhUsername
+                password ossrhPassword
+            }
+        }
+    }
+}
+
+ext.isReleaseVersion = !version.endsWith("SNAPSHOT")
+
+if (isReleaseVersion && !project.hasProperty("skipSigning")) {
+    signing {
+//        sign configurations.archives
+        sign publishing.publications
+    }
+}
+
+subprojects {
+    apply plugin: 'java-library'
+    apply plugin: 'maven-publish'
+    apply plugin: 'signing'
+
+    repositories {
+        mavenLocal()
+        mavenCentral()
+        maven {
+            url "https://oss.sonatype.org/content/repositories/snapshots"
+        }
+    }
+
+    //Jars are with jadex prefix
+    archivesBaseName = 'jadex-' + project.name
+
+    dependencies {
+        api libs.slf4j.api
+
+        compileOnly libs.lombok
+        annotationProcessor libs.lombok
+
+        testImplementation libs.junit.jupiter.api
+        testImplementation libs.junit.jupiter.params
+        testRuntimeOnly libs.junit.jupiter.engine
+        testRuntimeOnly libs.slf4j.log4j
+
+        testCompileOnly libs.lombok
+        testAnnotationProcessor libs.lombok
+    }
+
+    compileJava {
+        sourceCompatibility = '17'
+        targetCompatibility = '17'
+
+        options.compilerArgs += ["-Aproject=${project.group}/${project.name}"]
+    }
+
+    tasks.withType(Javadoc) {
+        options.encoding = 'UTF-8'
+    }
+
+    task sourceJar(type: Jar) {
+        archiveClassifier.set("sources")
+        from sourceSets.main.allJava
+    }
+
+    task javadocJar(type: Jar, dependsOn: javadoc) {
+        archiveClassifier.set("javadoc")
+        from javadoc.destinationDir
+    }
+
+    artifacts {
+        archives jar
+        archives sourceJar
+        archives javadocJar
+    }
+
+    // Make all tests use JUnit 5
+    tasks.withType(Test) {
+        useJUnitPlatform()
+    }
+
+    publishing {
+        publications {
+            mavenJava(MavenPublication) {
+                from components.java
+                artifact(sourceJar)
+                artifact(javadocJar)
+
+                artifactId 'jadex-' + project.name
+                pom {
+                    url = 'https://github.com/bloxbean/jadex'
+                    licenses {
+                        license {
+                            name = 'The MIT License'
+                            url = 'https://opensource.org/licenses/mit-license.php'
+                        }
+                    }
+                    developers {
+                        developer {
+                            id = 'stikkos'
+                            name = 'Stik'
+                        }
+                    }
+                    scm {
+                        connection = 'scm:git:git://github.com/bloxbean/jadex.git'
+                        developerConnection = 'scm:git:ssh://git@github.com/bloxbean/jadex.git'
+                        url = 'https://github.com/bloxbean/jadex'
+                    }
+                }
+            }
+        }
+
+        repositories {
+            String ossrhUsername = System.getenv('MAVEN_USERNAME')
+            String ossrhPassword = System.getenv('MAVEN_PASSWORD')
+
+            maven {
+                def releasesRepoUrl = "https://oss.sonatype.org/service/local/staging/deploy/maven2"
+                def snapshotsRepoUrl = "https://oss.sonatype.org/content/repositories/snapshots/"
+                url = version.endsWith('SNAPSHOT') ? snapshotsRepoUrl : releasesRepoUrl
+                credentials {
+                    username ossrhUsername
+                    password ossrhPassword
+                }
+            }
+        }
+    }
+
+    ext.isReleaseVersion = !version.endsWith("SNAPSHOT")
+
+    if (isReleaseVersion && !project.hasProperty("skipSigning")) {
+        signing {
+            sign publishing.publications
+        }
+    }
+}
+
