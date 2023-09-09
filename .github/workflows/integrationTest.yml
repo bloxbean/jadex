@@ -25,4 +25,7 @@ jobs:
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
       - name: Build with Gradle
-        run: ./gradlew integrationTest -PskipSigning=true -PTST_BF_PROJECT_ID=${{ secrets.TST_BF_PROJECT_ID }} -PMAIN_BF_PROJECT_ID=${{ secrets.MAIN_BF_PROJECT_ID }} --stacktrace
+        run: ./gradlew integrationTest -PskipSigning=true -PTST_BF_PROJECT_ID=${TST_BF_PROJECT_ID} -PMAIN_BF_PROJECT_ID=${MAIN_BF_PROJECT_ID} --stacktrace
+        env:
+          TST_BF_PROJECT_ID: ${{ secrets.TST_BF_PROJECT_ID }}
+          MAIN_BF_PROJECT_ID: ${{ secrets.MAIN_BF_PROJECT_ID }}
