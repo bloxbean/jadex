@@ -1,3 +1,4 @@
+[![Clean, Build](https://github.com/bloxbean/jadex/actions/workflows/build.yml/badge.svg)](https://github.com/bloxbean/jadex/actions/workflows/build.yml) [![Integration Tests](https://github.com/bloxbean/jadex/actions/workflows/integrationTest.yml/badge.svg)](https://github.com/bloxbean/jadex/actions/workflows/integrationTest.yml) 
 # JADEX - Cardano DEX aggregator
 
 Jadex is a Java-based DEX aggregation library for Cardano. It simplifies interactions with Decentralized Exchanges (DEX) on the Cardano blockchain from a Java application. Built as an abstraction layer on top of [Cardano Client Lib](https://github.com/bloxbean/cardano-client-lib).
