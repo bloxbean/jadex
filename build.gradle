@@ -151,6 +151,28 @@ subprojects {
         useJUnitPlatform()
     }
 
+    sourceSets {
+        integrationTest {
+            compileClasspath += sourceSets.main.output
+            runtimeClasspath += sourceSets.main.output
+        }
+    }
+
+    configurations {
+        integrationTestImplementation.extendsFrom testImplementation
+        integrationTestRuntimeOnly.extendsFrom testRuntimeOnly
+        integrationTestCompileOnly.extendsFrom testCompileOnly
+        integrationTestAnnotationProcessor.extendsFrom testAnnotationProcessor
+    }
+
+    task integrationTest(type: Test) {
+        description = 'Runs the integration tests.'
+        group = 'verification'
+        testClassesDirs = sourceSets.integrationTest.output.classesDirs
+        classpath = sourceSets.integrationTest.runtimeClasspath
+    }
+
+
     publishing {
         publications {
             mavenJava(MavenPublication) {

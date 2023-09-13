@@ -194,7 +194,7 @@ Tests which modify account state (swap and cancel) are only executed against pre
 ```
 export TST_BF_PROJECT_ID=<Blockfrost Preprod network Project Id>
 export MAIN_BF_PROJECT_ID=<Blockfrost Main network Project Id>
-./gradlew :integration-test:integrationTest -PTST_BF_PROJECT_ID=${TST_BF_PROJECT_ID} -PMAIN_BF_PROJECT_ID=${MAIN_BF_PROJECT_ID}
+./gradlew integrationTest -PTST_BF_PROJECT_ID=${TST_BF_PROJECT_ID} -PMAIN_BF_PROJECT_ID=${MAIN_BF_PROJECT_ID}
 ```
 
 ## How to contribute

@@ -1,0 +1,30 @@
+name: Integration Tests
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  commit-build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          submodules: 'true'
+      - name: Set up JDK 17
+        uses: actions/setup-java@v2
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
+      - name: Build with Gradle
+        run: ./gradlew integrationTest -PskipSigning=true -PTST_BF_PROJECT_ID=${TST_BF_PROJECT_ID} -PMAIN_BF_PROJECT_ID=${MAIN_BF_PROJECT_ID} --stacktrace
+        env:
+          TST_BF_PROJECT_ID: ${{ secrets.TST_BF_PROJECT_ID }}
+          MAIN_BF_PROJECT_ID: ${{ secrets.MAIN_BF_PROJECT_ID }}
