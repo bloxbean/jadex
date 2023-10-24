@@ -17,13 +17,13 @@ If you find value in using this library or wish to support its development, cons
         <dependency>
             <groupId>com.bloxbean.cardano</groupId>
             <artifactId>jadex</artifactId>
-            <version>0.0.1-beta1</version>
+            <version>{version}</version>
         </dependency>
 ```
 **For Gradle, add the following dependencies to build.gradle**
 
 ```
-implementation 'com.bloxbean.cardano:jadex:0.0.1-beta1'
+implementation 'com.bloxbean.cardano:jadex:{version}'
 ```
 
 
@@ -212,8 +212,7 @@ When contributing new `DexConfig` records, please provide matching `DexTestConfi
 
 ## Version History
 
-* 0.0.1-beta1
-    * Initial Release
+
 
 ## License
 
